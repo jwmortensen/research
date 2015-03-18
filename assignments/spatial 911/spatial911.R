@@ -61,7 +61,7 @@ mh.gibbs <- function(ndraws, sigma.start, sigma2.a, sigma2.b) {
   # initialize containers to hold draws
   lambda.star <- matrix(NA, nrow=ndraws, ncol=K)
   sigma2 <- numeric(ndraws)
-  delta <- rgamma(ndraws, shape=nrow(calls)+5, rate=1.2)
+  delta <- rgamma(ndraws, shape=nrow(calls)+0.001, rate=1.001)
 
   # create initial proposal and initialize variables 
   sigma2[1] <- sigma.start
