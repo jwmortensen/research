@@ -46,14 +46,40 @@
     so how do we model it?
     \end{minipage}
   \end{frame}
-  \section{Point Process Models}
+  \section{Point Processes}
   \begin{frame}
     \frametitle{Point Process Models}
-    
+     
+    Say something about the intensity surface here
   \end{frame}
-  \section{Poisson Point Processes}
 
-  \section{Our Model}
-
+  \section{Model}
+  \begin{frame}
+    \frametitle{Model}
+      \begin{itemize}
+        \item $N \sim Pois(\int_{s\in \mathbf{S}} \Lambda(s))$
+        \item $\mathbf{s}$ is a vector of N = 1389 observed 911 call locations
+        \item $\mathbf{S}$ is the set of all possible spatial locations
+        \item $L(\Lambda(s)) = e^{\int_{s\in\mathbf{S}}\Lambda(s)}\cdot \prod_{i=1}^{N}\Lambda(\mathbf{s}_i)$
+      \end{itemize}
+  \end{frame}
+  \begin{frame}
+    \frametitle{Model}
+    \begin{itemize}
+      \item $\mathbf{s}^{*}$ is K = 1428 spatial prediction locations
+      \item We can discretize $\Lambda(s)$ to make modeling easier:
+    \end{itemize}
+        $$ \Lambda(s) = \delta \sum_{k=1}^K \lambda_k 1 \left\{ \mathbf{s} \in \mathcal{G}_k \right\} $$
+  \end{frame}
+  \begin{frame}
+    \frametitle{Model}
+    \centering
+    \includegraphics[height=0.8\textheight]{blank_grid.pdf}
+  \end{frame}
+  \begin{frame}
+    \frametitle{Model}
+    \centering
+    \includegraphics[height=0.8\textheight]{grid_spot.pdf}
+  \end{frame}
   
 \end{document}
