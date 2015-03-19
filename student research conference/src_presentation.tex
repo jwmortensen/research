@@ -124,13 +124,14 @@
   \begin{frame}
     \frametitle{Fitting the Model}
       If we use a gamma($0.001, 0.001$) distribution as the prior for $\delta$ 
-      then the posterior distribution for $\delta$ is
-    \begin{align*} \pi(\delta)L(\delta|N) &\propto \exp(-\delta)\delta^{N}\exp(-0.001\delta)\delta^{0.001-1} \\ &=  \exp(-1.001\delta)\delta^{N+0.001-1} \end{align*}
+      then 
+    $$ \pi(\delta)L(\delta|N) \propto \exp(-1.001\delta)\delta^{N+0.001-1}$$
     which we recognize as the kernel of a gamma($N+0.001, 1.001$) distribution
   \end{frame}
   \begin{frame}
     \frametitle{Fitting the Model}
     How can we use the spatial smoothness in $\Lambda(\mathbf{s})$ to estimate $\lambda_1, \dots, \lambda_k$?
+    \pause
     \newline
     \newline
     We use a Gaussian process:
@@ -145,7 +146,7 @@
   \end{frame}
   \begin{frame}
     \frametitle{Fitting the Model}
-    If we use an inverse-gamma($0.01$, $0.01$) distribution as the prior for $\sigma^2$ then the posterior distribution is:
+    If we use an inverse-gamma($0.01$, $0.01$) distribution as the prior for $\sigma^2$ then 
     $$ \pi(\sigma^2)L(\sigma^2|\boldsymbol\lambda^{*}) \propto 
       (\sigma^2)^{-(0.01+\frac{N}{2})}\exp\left\{-\frac{1}{2\sigma^2}\left[0.01+\frac{1}{2}(\boldsymbol\lambda^{*})^{'}\mathbf{M}^{-1}(\boldsymbol\lambda^{*})\right]\right\}
     $$
@@ -154,7 +155,29 @@
   \end{frame}
   \begin{frame}
     \frametitle{Fitting the Model}
-    $$ L(\boldsymbol\lambda) \propto \prod_{i=1}^{K}\lambda_k^{N_k} $$
+      With $\boldsymbol\lambda^{*} \sim \mathcal{N}(0, \sigma^2\mathbf{M})$, 
+    $$ \pi(\boldsymbol\lambda^{*})L(\boldsymbol\lambda^{*} | N) \propto 
+      \exp\left(-\frac{1}{2\sigma^2}(\boldsymbol\lambda^{*})^{'}\mathbf{M}^{-1}(\boldsymbol\lambda^{*})\right)\prod_{k=1}^{K}\lambda_k^{N_k} $$
+  \end{frame}
+  \begin{frame}
+    \frametitle{Fitting the Model}
+    Using a Metropolis within Gibbs sampler, we generate 100,000 draws for $\boldsymbol\lambda^{*}$, $\delta$ and $\sigma^2$
+    \begin{figure}
+      \begin{minipage}{0.3\textwidth}
+        \includegraphics[width=1.0\textwidth]{delta_trace.pdf}
+        \caption{Trace for $\delta$}
+      \end{minipage}
+      \hfill
+      \begin{minipage}{0.3\textwidth}
+        \includegraphics[width=1.0\textwidth]{sigma_trace.pdf}
+        \caption{Trace for $\sigma^2$}
+      \end{minipage}
+      \hfill
+      \begin{minipage}{0.3\textwidth}
+        \includegraphics[width=1.0\textwidth]{lambda_trace.pdf}
+        \caption{Trace for $\lambda_{707}$}
+      \end{minipage}
+    \end{figure}
   \end{frame}
   \section{Results}
   \begin{frame}
@@ -162,7 +185,7 @@
     \centering
     \begin{figure}
       \caption{Posterior Density of $\delta$}
-      \includegraphics[height=0.725\textheight]{delta.pdf}
+      \includegraphics[height=0.625\textheight]{delta_density.pdf}
     \end{figure}
     Posterior Mean: 1387.65
   \end{frame}
@@ -171,16 +194,17 @@
     \centering
     \begin{figure}
       \caption{Posterior Density of $\sigma^2$}
-      \includegraphics[height=0.725\textheight]{sigma2.pdf}
+      \includegraphics[height=0.625\textheight]{s2_density.pdf}
     \end{figure}
     Posterior Mean: 0.87
   \end{frame}
   \begin{frame}
     \frametitle{Results}
-    \centering
+   \centering
     \begin{figure}
       \caption{Posterior Density of $\boldsymbol\lambda$}
-      \includegraphics[height=0.9\textheight]{callLocationsPred.pdf}
+      \includegraphics[height=0.7\textheight]{posteriorLocationDensity.pdf}
     \end{figure}
   \end{frame}
+  \section{Questions?}
 \end{document}
