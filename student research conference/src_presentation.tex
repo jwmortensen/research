@@ -25,18 +25,11 @@
   \section{Introduction}
   \begin{frame}
     \frametitle{Introduction}
-    \begin{itemize}
-      \item Extreme heat scenarios pose a significant threat to public health
-      \item It is of interest for researchers to understand how the effect of heat varies by location
-    \end{itemize}
-  \end{frame}
-  \begin{frame}
-    \frametitle{Introduction}
     \centering
     \includegraphics[width=0.8\textwidth]{houston_map.jpg}
   \end{frame}
   \begin{frame}{Introduction}
-    Our data includes information about 1389 heat-related 911 calls \newline
+    Data: 1389 heat-related 911 calls, 2009-2010 \newline
     \newline
     How many 911 calls will come in and where they will come from? \newline
 
@@ -50,34 +43,24 @@
     so how do we model it?
     \end{minipage}
   \end{frame}
-  \begin{frame}
-    \frametitle{Point Process Models}
-    We use a point process model
-    \begin{itemize}
-      \item Models both frequency and location of events
-      \item Relies on an intensity function, $\Lambda(x)$
-      \item $\Lambda(x)$ integrates to the expected number of events
-      \item If we normalize $\Lambda(x)$ it becomes the density of event location
-    \end{itemize} 
-    $\Lambda(x)$ is the key!
-  \end{frame}
 
   \section{Model}
   \begin{frame}
     \frametitle{Model}
+    We use a Poisson point process model
       \begin{itemize}
-        \item $\mathbf{s_1}, \mathbf{s_2}, \dots, \mathbf{s_N}$ where N = 1389 are the latitude-longitude coordinates of the observed 911 calls
-        \item $\mathcal{S}$ is the set of all latitude-longitude coordinates in Houston
         \item $N \sim Pois(\int_{\mathcal{S}} \Lambda(s))$
         \item $f(\mathbf{s_1}, \mathbf{s_2}, \dots, \mathbf{s_N}|N) = \prod_{i=1}^{N} \frac{\Lambda(\mathbf{s_i})}{\int_{\mathcal{S}}\Lambda(\mathbf{s})}$ 
+        \item $\Lambda(\mathbf{s})$ is the \textbf{intensity function}
+        \item $\mathbf{s_1}, \mathbf{s_2}, \dots, \mathbf{s_N}$ where N = 1389 are the latitude-longitude coordinates of the observed 911 calls
+        \item $\mathcal{S}$ is the set of all latitude-longitude coordinates in Houston
       \end{itemize}
+    \pause
+    $\Lambda(\mathbf{s})$ is the key!
   \end{frame}
   \begin{frame}
     \frametitle{Model}
-    Our likelihood is:
-      $$L(\Lambda(\mathbf{s})) = \frac{\exp(-\int_{\mathcal{S}}\Lambda(\mathbf{s}))\left(\int_{\mathcal{S}}\Lambda(\mathbf{s})\right)^{N}}{N!}
-        \prod_{i=1}^{N}\frac{\Lambda(\mathbf{s_i})}{\int_{\mathcal{S}}\Lambda(\mathbf{s})}$$
-    which is equivalent to:
+    It can be shown the likelihood is:
       $$L(\Lambda(\mathbf{s})) = \exp\left(-\int_{\mathcal{S}}\Lambda(\mathbf{s})\right) \prod_{i=1}^{N}\Lambda(\mathbf{s}_i)$$
   \end{frame}
   \begin{frame}
@@ -117,16 +100,14 @@
   \end{frame}
   \begin{frame}
     \frametitle{Model}
-    With $\Lambda(\mathbf{s}) = \delta \sum_{k=1}^K \frac{\lambda_k}{|\mathcal{G}_k|} \mathds{1} \left\{ \mathbf{s} \in \mathcal{G}_k \right\}$ our likelihood can be written
+    With $$\Lambda(\mathbf{s}) = \delta \sum_{k=1}^K \frac{\lambda_k}{|\mathcal{G}_k|} \mathds{1} \left\{ \mathbf{s} \in \mathcal{G}_k \right\}$$
+    the likelihood can be rewritten as
     $$L(\Lambda(\mathbf{s})) = \exp\left(-\delta\right) \delta^N \prod_{i=1}^{N}\frac{\lambda_{\left\{k: \mathbf{s_i} \in \mathcal{G}_k \right\}}}{|\mathcal{G}_k|}$$   
   \end{frame}
   \section{Fitting the Model}
   \begin{frame}
     \frametitle{Fitting the Model}
-      If we use a gamma($0.001, 0.001$) distribution as the prior for $\delta$ 
-      then 
-    $$ \pi(\delta)L(\delta|N) \propto \exp(-1.001\delta)\delta^{N+0.001-1}$$
-    which we recognize as the kernel of a gamma($N+0.001, 1.001$) distribution
+      $$\delta \sim \text{gamma}(0.001, 0.001)\text{,  conjugate}$$
   \end{frame}
   \begin{frame}
     \frametitle{Fitting the Model}
@@ -146,34 +127,20 @@
   \end{frame}
   \begin{frame}
     \frametitle{Fitting the Model}
-    If we use an inverse-gamma($0.01$, $0.01$) distribution as the prior for $\sigma^2$ then 
-    $$ \pi(\sigma^2)L(\sigma^2|\boldsymbol\lambda^{*}) \propto 
-      (\sigma^2)^{-(0.01+\frac{N}{2})}\exp\left\{-\frac{1}{2\sigma^2}\left[0.01+\frac{1}{2}(\boldsymbol\lambda^{*})^{'}\mathbf{M}^{-1}(\boldsymbol\lambda^{*})\right]\right\}
-    $$
-    which we recognize as the kernel of an inverse-gamma$(0.01+\frac{N}{2}, 0.01+\frac{1}{2}(\boldsymbol\lambda^{*})^{'}\mathbf{M}^{-1}(\boldsymbol\lambda^{*}))$
-    distribution
-  \end{frame}
-  \begin{frame}
-    \frametitle{Fitting the Model}
       With $\boldsymbol\lambda^{*} \sim \mathcal{N}(0, \sigma^2\mathbf{M})$, 
     $$ \pi(\boldsymbol\lambda^{*})L(\boldsymbol\lambda^{*} | N) \propto 
-      \exp\left(-\frac{1}{2\sigma^2}(\boldsymbol\lambda^{*})^{'}\mathbf{M}^{-1}(\boldsymbol\lambda^{*})\right)\prod_{k=1}^{K}\lambda_k^{N_k} $$
+      \exp\left(-\frac{1}{2\sigma^2}(\boldsymbol\lambda^{*})^{'}\mathbf{M}^{-1}(\boldsymbol\lambda^{*})\right)\prod_{k=1}^{K}\left(\frac{\exp(\lambda_k^{*})}{\sum_{j=1}^{K}\exp(\lambda_j^{*})}\right)^{N_k} $$
   \end{frame}
   \begin{frame}
     \frametitle{Fitting the Model}
-    Using a Metropolis within Gibbs sampler, we generate 100,000 draws for $\boldsymbol\lambda^{*}$, $\delta$ and $\sigma^2$
+    Using a Metropolis within Gibbs sampler, we generate 100,000 draws for $\delta$ and $\boldsymbol\lambda^{*}$
     \begin{figure}
-      \begin{minipage}{0.3\textwidth}
+      \begin{minipage}{0.45\textwidth}
         \includegraphics[width=1.0\textwidth]{delta_trace.pdf}
         \caption{Trace for $\delta$}
       \end{minipage}
       \hfill
-      \begin{minipage}{0.3\textwidth}
-        \includegraphics[width=1.0\textwidth]{sigma_trace.pdf}
-        \caption{Trace for $\sigma^2$}
-      \end{minipage}
-      \hfill
-      \begin{minipage}{0.3\textwidth}
+      \begin{minipage}{0.455555\textwidth}
         \includegraphics[width=1.0\textwidth]{lambda_trace.pdf}
         \caption{Trace for $\lambda_{707}$}
       \end{minipage}
@@ -191,20 +158,25 @@
   \end{frame}
   \begin{frame}
     \frametitle{Results}
-    \centering
-    \begin{figure}
-      \caption{Posterior Density of $\sigma^2$}
-      \includegraphics[height=0.625\textheight]{s2_density.pdf}
-    \end{figure}
-    Posterior Mean: 0.87
-  \end{frame}
-  \begin{frame}
-    \frametitle{Results}
    \centering
     \begin{figure}
       \caption{Posterior Density of $\boldsymbol\lambda$}
       \includegraphics[height=0.7\textheight]{posteriorLocationDensity.pdf}
     \end{figure}
+  \end{frame}
+  \section{Conclusions}
+  \begin{frame}
+    \frametitle{Conclusions}
+    Questions:
+    \begin{itemize}
+      \item How many calls?
+      \item Where are they at?
+    \end{itemize}
+    Next steps:
+    \begin{itemize}
+      \item Expand model to account for variation over time
+      \item Work to include additional measures of vulnerability
+    \end{itemize}
   \end{frame}
   \section{Questions?}
 \end{document}
