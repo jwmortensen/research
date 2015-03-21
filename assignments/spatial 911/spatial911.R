@@ -52,7 +52,7 @@ for (i in nn.index) Nk[i] <- Nk[i] + 1
 amcmc <- vector("list", length=num.blocks)
 for (i in 1:num.blocks) {
   amcmc[[i]]$mn <- matrix(0, ncol=1, nrow=length(close.pts.index[[i]]))
-  amcmc[[i]]$var <- matrix(0, ncol=length(close.pts.index[[i]]), nrow=length(close.pts.index[[i]]))
+  amcm[[i]]$var <- matrix(0, ncol=length(close.pts.index[[i]]), nrow=length(close.pts.index[[i]]))
 }
 amcmc.it <- 100
 
@@ -113,18 +113,7 @@ mh.gibbs <- function(ndraws, sigma.start, sigma2.a, sigma2.b) {
   return(list(delta=delta, sigma2=sigma2, lambda=lambda))
 }
 
-ndraws <- 10
-op.time <- system.time(draws <- mh.gibbs(ndraws, 15, 0.01, 0.01))
 
-lambda.post.mn <- apply(draws$lambda, 2, mean)
-plot.grid <- matrix(NA, nrow=125, ncol=125)
-plot.grid[kp.gp] <- lambda.post.mn
-
-pdf("callLocationsObs.pdf")
-plot(houston)
-image.plot(x.grid, y.grid, plot.grid, add=TRUE)
-plot(houston, add=TRUE)
-dev.off()
 
 pdf("trace.plots.pdf")
 plot(1:500, draws$lambda[,1], type="l", xlab="Iteration", main="Small Lambda")

@@ -51,14 +51,8 @@ ggplot(s2.density, aes(x=x, y=y)) +
          geom_vline(xintercept=mean(draws$sigma2[-c(1:burnin)]))
 ggsave("s2_density.pdf")
 
-pdf("delta_trace.pdf")
-plot(1:ndraws, draws$delta, type="l", xlab="Iteration", ylab=bquote(delta), main=bquote("Trace for "~delta))
-dev.off()
+qplot(1:ndraws, draws$delta, geom="line", xlab="Iteration", ylab=bquote(delta))
+ggsave("delta_trace.png")
 
-pdf("sigma_trace.pdf")
-plot(1:ndraws, draws$sigma2, type="l", xlab="Iteration", ylab=bquote(sigma^2), main=bquote("Trace for"~sigma^2))
-dev.off()
-
-pdf("lambda_trace.pdf")
-plot(1:ndraws, draws$lambda[, 707], type="l", xlab="Iteration", ylab=bquote(lambda[707]), main=bquote("Trace for"~lambda[707]))
-dev.off()
+qplot(1:ndraws, draws$lambda[, 707], geom="line", xlab="Iteration", ylab=bquote(lambda[707]))
+ggsave("lambda_trace.png")

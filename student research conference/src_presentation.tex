@@ -14,7 +14,7 @@
 \usemintedstyle{trac}
 
 \title{Poisson Processes and 911 Calls}
-\subtitle{}
+\subtitle{Advisor: Dr. Matt Heaton}
 \date{\today}
 \author{Jacob Mortensen}
 \institute{Brigham Young University}
@@ -29,7 +29,7 @@
     \includegraphics[width=0.8\textwidth]{houston_map.jpg}
   \end{frame}
   \begin{frame}{Introduction}
-    Data: 1389 heat-related 911 calls, 2009-2010 \newline
+    Data: 1389 heat-related 911 calls, 2006-2010 \newline
     \newline
     How many 911 calls will come in and where they will come from? \newline
 
@@ -71,38 +71,35 @@
       \item This allows us to discretize $\Lambda(\mathbf{s})$ to make modeling easier:
     \end{itemize}
         $$ \Lambda(\mathbf{s}) = \delta \sum_{k=1}^K \frac{\lambda_k}{|\mathcal{G}_k|} \mathds{1} \left\{ \mathbf{s} \in \mathcal{G}_k \right\} $$
-  \end{frame}
-  \begin{frame}
-    \frametitle{Model}
-    $$ \Lambda(\mathbf{s}) = \delta \sum_{k=1}^K \frac{\lambda_k}{|\mathcal{G}_k|} \mathds{1} \left\{ \mathbf{s} \in \mathcal{G}_k \right\} $$
-    \begin{itemize}
-      \item $\delta$ is the expected number of 911 calls
-      \item $\lambda_k$ is the probability that a 911 call occurs in grid cell $\mathcal{G}_k$
-      \item $\mathcal{G}_k$ is the set of spatial coordinates that are closest to grid point $\mathbf{s}_k^{*}$
-      \item $|\mathcal{G}_k| = \int_{\mathcal{G}_k}d\mathbf{s}$ is the the ``area" of grid cell $\mathcal{G}_k$
-      \item $\lambda_k \in (0,1)$ and $\sum_{k=1}^K \lambda_k = 1$
-    \end{itemize}
+
+    where $\lambda_k \in (0,1) \text{ and }\sum_{k=1}^K \lambda_k = 1$
   \end{frame}
   \begin{frame}
     \frametitle{Model}
     \centering
+    $\Lambda(\mathbf{s}) = \delta \sum_{k=1}^K \frac{\lambda_k}{|\mathcal{G}_k|} \mathds{1} \left\{ \mathbf{s} \in \mathcal{G}_k \right\}$
     \includegraphics[height=0.8\textheight]{blank_grid.pdf}
   \end{frame}
   \begin{frame}
     \frametitle{Model}
     \centering
+    $ \Lambda(\mathbf{s}) = \delta \sum_{k=1}^K \frac{\lambda_k}{|\mathcal{G}_k|} \mathds{1} \left\{ \mathbf{s} \in \mathcal{G}_k \right\} $
     \includegraphics[height=0.8\textheight]{grid_spot.pdf}
   \end{frame}
   \begin{frame}
     \frametitle{Model}
     \centering
+    $ \Lambda(\mathbf{s}) = \delta \sum_{k=1}^K \frac{\lambda_k}{|\mathcal{G}_k|} \mathds{1} \left\{ \mathbf{s} \in \mathcal{G}_k \right\} $
     \includegraphics[height=0.8\textheight]{grid_spot_highlighted.pdf}
   \end{frame}
   \begin{frame}
     \frametitle{Model}
     With $$\Lambda(\mathbf{s}) = \delta \sum_{k=1}^K \frac{\lambda_k}{|\mathcal{G}_k|} \mathds{1} \left\{ \mathbf{s} \in \mathcal{G}_k \right\}$$
     the likelihood can be rewritten as
-    $$L(\Lambda(\mathbf{s})) = \exp\left(-\delta\right) \delta^N \prod_{i=1}^{N}\frac{\lambda_{\left\{k: \mathbf{s_i} \in \mathcal{G}_k \right\}}}{|\mathcal{G}_k|}$$   
+    \begin{align*}
+      L(\Lambda(\mathbf{s})) &= \exp\left(-\delta\right) \delta^N \prod_{i=1}^{N}\frac{\lambda_{\left\{k: \mathbf{s_i} \in \mathcal{G}_k \right\}}}{|\mathcal{G}_k|} \\
+      &= \exp\left(-\delta\right) \delta^N \prod_{i=1}^{K}\frac{\lambda_k^{N_k}}{|\mathcal{G}_k|} 
+    \end{align*}
   \end{frame}
   \section{Fitting the Model}
   \begin{frame}
@@ -118,9 +115,7 @@
     We use a Gaussian process:
     \begin{itemize}
       \item Let $\lambda_k \propto \exp(\lambda_k^{*})$
-      \item Let $\boldsymbol{\lambda}^{*} = \begin{pmatrix} \lambda_1^{*} \\ \vdots \\ \lambda_k^{*} \end{pmatrix} \sim \mathcal{N}(\mathbf{0}, \sigma^2\mathbf{M})$
-      \item $\mathbf{M}$ is a $K \times K$ correlation matrix with $ij^{th}$ element $M_{\nu}(\|\mathbf{s}_i^{*}-\mathbf{s}_j^{*}\|~| \phi)$ where $M_{\nu}(d | \phi)$
-            is the Mat\'{e}rn correlation function with smoothness $\nu$ and decay $\phi$
+      \item Let $\boldsymbol{\lambda}^{*} = \begin{pmatrix} \lambda_1^{*} \\ \vdots \\ \lambda_k^{*} \end{pmatrix} \sim \mathcal{N}(\mathbf{0}, \sigma^2\mathbf{M}_{\nu}(D|\phi))$
       \item Then it follows that $\lambda_k = \frac{\exp(\lambda_k^{*})}{\sum_{j=1}^{K}\exp(\lambda_j^{*})}$
 
     \end{itemize}
@@ -136,12 +131,12 @@
     Using a Metropolis within Gibbs sampler, we generate 100,000 draws for $\delta$ and $\boldsymbol\lambda^{*}$
     \begin{figure}
       \begin{minipage}{0.45\textwidth}
-        \includegraphics[width=1.0\textwidth]{delta_trace.pdf}
+        \includegraphics[width=1.0\textwidth]{delta_trace.png}
         \caption{Trace for $\delta$}
       \end{minipage}
       \hfill
-      \begin{minipage}{0.455555\textwidth}
-        \includegraphics[width=1.0\textwidth]{lambda_trace.pdf}
+      \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=1.0\textwidth]{lambda_trace.png}
         \caption{Trace for $\lambda_{707}$}
       \end{minipage}
     \end{figure}
@@ -167,15 +162,21 @@
   \section{Conclusions}
   \begin{frame}
     \frametitle{Conclusions}
-    Questions:
+    Successfully answered the questions:
     \begin{itemize}
       \item How many calls?
       \item Where are they at?
     \end{itemize}
+    \pause
+    \textbf{So what?}
+  \end{frame}
+  \begin{frame}
+    \frametitle{Conclusions}
     Next steps:
     \begin{itemize}
-      \item Expand model to account for variation over time
-      \item Work to include additional measures of vulnerability
+      \item Add in a lagged effect for temperature
+      \item Analyze demographics (e.g. age, race, etc.)
+      \item Merge 911 call map with a similar map for heat-related mortalities
     \end{itemize}
   \end{frame}
   \section{Questions?}
