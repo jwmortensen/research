@@ -1,0 +1,9 @@
+Extreme heat constitutes a significant threat to public health. Various studies have shown that 
+extreme heat is linked to increases in mortality, emergency room visits and other diseases. Due
+ to the negative effects of heat, researchers are interested in understanding the demographics 
+of callers who call 911 for heat-related illnesses. One method that can be used to predict these 
+demographics is a Poisson process. Poisson processes are a type of stochastic process that can be
+used to model the occurrences of events in time or space. Past researchers have used them to 
+describe occurrence of accidents at a given place, visits to a web site, and machine failures, 
+to name just a few.  Using data collected from 1818 individuals who called 911 for a heat related 
+emergency, I show how a Poisson process can be used to estimate the proportion of callers of various ages.
