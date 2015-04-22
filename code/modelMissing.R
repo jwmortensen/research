@@ -2,13 +2,13 @@ library(foreach)
 library(doParallel)
 source("fitMaternGP.R")
 ## Brings in a list called temp.data that has NAs that need to be estimated
-load("../data/TemperatureData_withMissing.RData")
+load("./RData/TemperatureData_withMissing.RData")
 
 # Fix nu at 3.5
 nu <- 3.5
-numCores <- 1
+numCores <- 10
 registerDoParallel(cores=numCores)
-temp.data.nomiss <- foreach(i in 1:length(temp.data)) %dopar% {
+time <- system.time(temp.data.nomiss <- foreach(i=1:length(temp.data)) %dopar% {
   for (j in 3:ncol(temp.data[[i]])) {
     where.NA <- is.na(temp.data[[i]][,j])
     unobs.dat <- temp.data[[i]][where.NA,]
@@ -17,9 +17,11 @@ temp.data.nomiss <- foreach(i in 1:length(temp.data)) %dopar% {
     pred.locs <- cbind(unobs.dat$LON, unobs.dat$LAT)
     
     # estimate parameters using fit.Matern.GP. This is going to be our biggest bottleneck
+    # Takes 1.27 hours to run this script for 10 dfs in temp.data with 8 variables to estimate using 10 cores
     params <- fit.Matern.GP(obs.dat[,j], matrix(rep(1, length(obs.dat[,j])), ncol=1), locs, nu)
     s2 <- params$sigma2
-    phi <- params$phi
+    phi <- params$ph
+    print(phi)
     tau2 <- params$tau2
     mu <- params$beta.hat
     
@@ -32,7 +34,7 @@ temp.data.nomiss <- foreach(i in 1:length(temp.data)) %dopar% {
     temp.data[[i]][where.NA,j] <- predictions
   }
   temp.data[[i]]
-}
+})
 
 names(temp.data.nomiss) <- names(temp.data)
-save(temp.data.nomiss, file="TempDataNoMiss.RData")
+save(temp.data.nomiss, file="./RData/TempDataNoMiss.RData")

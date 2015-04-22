@@ -39,12 +39,12 @@ filepath <- "../Data/Heat/RawNCDFFiles/houston_hrldas_"
 endpiece <- "_alldays.nc"
 
 list.names <- as.character(unique.dates)
-vars <- c("HI_MAX", "HI_MIN")
+vars <- c("HI_MAX", "HI_MIN", "T2MIN", "T2MAX", "SW_MIN", "SW_MAX")
 
 # Register cores to use
-numCores <- 1
+numCores <- 16
 registerDoParallel(cores=numCores)
-temp.data <- foreach (i=1:length(unique.days)) %dopar% {
+temp.data <- foreach (i=1:length(unique.dates)) %dopar% {
   ######################################
   # Get variables for the observed day #
   ######################################
@@ -105,5 +105,5 @@ temp.data <- foreach (i=1:length(unique.days)) %dopar% {
   df
 }
 
-names(time.temp.data) <- list.names
-save(temp.data, file="TemperatureData_withMissing.RData")
+names(temp.data) <- list.names
+save(temp.data, file="./RData/TemperatureData_withMissing.RData")
