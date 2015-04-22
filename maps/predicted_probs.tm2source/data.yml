@@ -1,0 +1,31 @@
+_prefs: 
+  disabled: []
+  inspector: false
+  mapid: jwmortensen.26e5637d
+  rev: s-ee16fdbd
+  saveCenter: true
+attribution: ''
+center: 
+  - -95.3909
+  - 29.8234
+  - 11
+description: ''
+Layer: 
+  - id: predicted_probs
+    Datasource: 
+      file: /Users/jacobmortensen/Research/Dr. Heaton/maps/shapefiles/predicted_probs.shp
+      type: shape
+    description: ''
+    fields: 
+      ID: Number
+      lambda_pos: predicted probability that a heat related 911 call comes from this location
+      X_MAX: Number
+      X_MIN: Number
+      Y_MAX: Number
+      Y_MIN: Number
+    properties: 
+      "buffer-size": 8
+    srs: +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs
+maxzoom: 14
+minzoom: 0
+name: predicted 911 call grid
