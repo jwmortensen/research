@@ -1,6 +1,3 @@
 [submodule "research-code"]
 	path = research-code
 	url = https://github.com/jwmortensen/research-code.git
-[submodule "code"]
-	path = code
-	url = https://github.com/jwmortensen/research-code.git
